@@ -16,6 +16,10 @@ def generate_number():
 
 def check_number(user_number):
     # Проверка правила о том, что загаданное число должно состоять из 4 цифр
+    if user_number == 'cheat':
+        print(_number)
+    if not user_number.isdigit():
+        return None
     if int(user_number) < 1000 or int(user_number) > 9999:
         return None
 
