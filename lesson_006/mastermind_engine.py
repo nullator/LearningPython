@@ -45,7 +45,3 @@ def check_number(user_number):
 
     # print('Быков: ', bulls, ', коров: ', cows)
     return {'bulls': bulls, 'cows': cows}
-
-
-
-
