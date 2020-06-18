@@ -11,7 +11,7 @@ import simple_draw as sd
 
 class Snowflake:
 
-    def __init__(self, x=randint(50, 550), y=randint(500, 600), line_len=25):
+    def __init__(self, x=randint(50, 550), y=randint(500, 600), line_len=15):
         self.x = x
         self.y = y
         self.line_len = line_len
@@ -25,22 +25,10 @@ class Snowflake:
 
     def draw(self, color=sd.COLOR_WHITE):
         start_point = sd.get_point(self.x, self.y)
-        end_point = sd.get_point(self.x, self.y + self.line_len)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x, self.y - self.line_len)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x + self.line_len, self.y)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x - self.line_len, self.y)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x + self.line_len * 0.7, self.y + self.line_len * 0.7)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x + self.line_len * 0.7, self.y - self.line_len * 0.7)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x - self.line_len * 0.7, self.y + self.line_len * 0.7)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
-        end_point = sd.get_point(self.x - self.line_len * 0.7, self.y - self.line_len * 0.7)
-        sd.line(start_point=start_point, end_point=end_point, color=color)
+        for i in range(6):
+            new_point = sd.vector(start=start_point, angle=i*60, length=self.line_len*0.55, color=color)
+            for j in range(3):
+                sd.vector(start=new_point, angle=(i*60-35+j*35), length=self.line_len*0.45, color=color)
 
     def can_fall(self):
         if self.y >= self.line_len:
@@ -65,7 +53,7 @@ def get_flakes(count):
     for i in range(count):
         x = randint(50, 550)
         y = randint(400, 550)
-        line_len = randint(25, 35)
+        line_len = randint(15, 20)
         flakes_result.append(Snowflake(x=x, y=y, line_len=line_len))
     return flakes_result
 
@@ -74,7 +62,7 @@ def append_flakes(count):
     for i in range(count):
         x = randint(50, 550)
         y = randint(400, 550)
-        line_len = randint(25, 35)
+        line_len = randint(15, 20)
         flakes.append(Snowflake(x=x, y=y, line_len=line_len))
 
 
@@ -93,8 +81,7 @@ while True:
             flake.draw()
     if fallen_flakes:
         append_flakes(count=fallen_flakes)
-        fallen_flakes = 0
-    sd.sleep(0.1)
+    sd.sleep(0.01)
     if sd.user_want_exit():
         break
 
