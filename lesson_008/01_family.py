@@ -74,7 +74,7 @@ class Man:
                 self.fullness += 30
                 self.house.food -= 30
                 Man.total_eat += 30
-                print(f'{self.name} поел')
+                print(f'{self.name} поел, осталось еды {self.house.food}')
             else:
                 self.fullness += self.house.food
                 Man.total_eat += self.house.food
@@ -120,9 +120,7 @@ class Husband(Man):
             elif dice == 5:
                 self.gaming()
             elif dice == 6:
-                self.game_with_cat()
-        else:
-            print(f'{self.name} мертв')
+                super().game_with_cat()
 
     def eat(self):
         super().eat()
@@ -152,9 +150,9 @@ class Wife(Man):
             dice = randint(1, 9)
             if self.fullness <= 20:
                 self.eat()
-            elif self.house.food <= 50 or self.house.pet_food <= 50:
+            elif self.house.food <= 60 or self.house.pet_food <= 50:
                 self.shopping()
-            elif self.house.dirt > 100:
+            elif self.house.dirt >= 90:
                 self.clean_house()
             elif dice <= 1:
                 self.eat()
@@ -166,8 +164,6 @@ class Wife(Man):
                 self.buy_fur_coat()
             elif 8 <= dice <= 9:
                 super().game_with_cat()
-        else:
-            print(f'{self.name} мертва')
 
     def eat(self):
         super().eat()
@@ -178,7 +174,7 @@ class Wife(Man):
             self.house.pet_food += 100
             self.house.money -= 200
             self.fullness -= 10
-            print(f'{self.name} купила еды')
+            print(f'{self.name} купила еды и корма')
         elif self.house.money > 0:
             self.house.food += self.house.money
             self.house.money = 0
@@ -189,7 +185,7 @@ class Wife(Man):
             print(f'{self.name} хотела купить еды, но дене нет')
 
     def buy_fur_coat(self):
-        if self.house.money >= 350:
+        if self.house.money >= 500:
             self.house.money -= 350
             self.happy += 60
             self.fullness -= 10
@@ -299,7 +295,7 @@ class Cat:
             print(f'{self.name} умер')
             return 'Dead'
         dice = randint(1, 5)
-        if self.fullness <= 10:
+        if self.fullness <= 20:
             self.eat()
         elif dice == 1:
             self.eat()
@@ -340,7 +336,7 @@ serge.house = home
 masha.house = home
 kolya.house = home
 
-number_cat = 2
+number_cat = 7
 cats = []
 for number in range(number_cat):
     cats.append(Cat(name=f'Мурзик {number}'))
@@ -353,13 +349,11 @@ for day in range(365):
     kolya.act()
     for number in range(number_cat):
         cats[number].act()
-
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
     cprint(kolya, color='cyan')
     for number in range(number_cat):
         cprint(cats[number], color='cyan')
-
     cprint(home, color='cyan')
 
 print('')
