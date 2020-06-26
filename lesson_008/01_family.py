@@ -209,7 +209,7 @@ class Wife(Man):
             print(f'{self.name} убралась дома')
 
 
-######################################################## Часть вторая бис
+######################################################## Часть вторая
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
 #
@@ -261,32 +261,6 @@ class Child(Man):
         print(f'{self.name} спит')
 
 
-home = House()
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-kolya = Child(name='Коля')
-
-serge.house = home
-masha.house = home
-kolya.house = home
-
-for day in range(365):
-    cprint('================== День {} =================='.format(day+1), color='red')
-    serge.act()
-    masha.act()
-    kolya.act()
-    cprint(serge, color='cyan')
-    cprint(masha, color='cyan')
-    cprint(kolya, color='cyan')
-    cprint(home, color='cyan')
-
-print('')
-cprint(f'Всего заработано {Man.total_money} денег, съедено {Man.total_eat} еды, куплено {Man.total_coat} шуб', color='red')
-
-# TODO после реализации первой части - отдать на проверку учителю
-
-######################################################## Часть вторая
-#
 # После подтверждения учителем первой части надо
 # отщепить ветку develop и в ней начать добавлять котов в модель семьи
 #
@@ -361,18 +335,22 @@ home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 murzik = Cat(name='Мурзик')
+kolya = Child(name='Коля')
 
 serge.house = home
 masha.house = home
 murzik.house = home
+kolya.house = home
 
 for day in range(365):
     cprint('================== День {} =================='.format(day+1), color='red')
     serge.act()
     masha.act()
     murzik.act()
+    kolya.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
+    cprint(kolya, color='cyan')
     cprint(murzik, color='cyan')
     cprint(home, color='cyan')
 
