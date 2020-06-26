@@ -107,11 +107,11 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
-        if super().act() is not "Dead":
+        if super().act() != "Dead":
             dice = randint(1, 6)
             if self.fullness <= 20:
                 self.eat()
-            elif self.house.money <= 100:
+            elif self.house.money <= 200:
                 self.work()
             elif dice == 1:
                 self.eat()
@@ -148,11 +148,11 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
-        if super().act() is not "Dead":
+        if super().act() != "Dead":
             dice = randint(1, 9)
             if self.fullness <= 20:
                 self.eat()
-            elif self.house.food <= 50 or self.house.pet_food <= 20:
+            elif self.house.food <= 50 or self.house.pet_food <= 50:
                 self.shopping()
             elif self.house.dirt > 100:
                 self.clean_house()
@@ -173,10 +173,10 @@ class Wife(Man):
         super().eat()
 
     def shopping(self):
-        if self.house.money >= 150:
-            self.house.food += 120
-            self.house.pet_food += 30
-            self.house.money -= 150
+        if self.house.money >= 200:
+            self.house.food += 100
+            self.house.pet_food += 100
+            self.house.money -= 200
             self.fullness -= 10
             print(f'{self.name} купила еды')
         elif self.house.money > 0:
@@ -229,7 +229,7 @@ class Child(Man):
         return super().__str__()
 
     def act(self):
-        if super().act() is not "Dead":
+        if super().act() != "Dead":
             dice = randint(1, 2)
             if self.fullness <= 20:
                 self.eat()
@@ -334,24 +334,32 @@ class Cat:
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
-murzik = Cat(name='Мурзик')
 kolya = Child(name='Коля')
 
 serge.house = home
 masha.house = home
-murzik.house = home
 kolya.house = home
+
+number_cat = 2
+cats = []
+for number in range(number_cat):
+    cats.append(Cat(name=f'Мурзик {number}'))
+    cats[number].house = home
 
 for day in range(365):
     cprint('================== День {} =================='.format(day+1), color='red')
     serge.act()
     masha.act()
-    murzik.act()
     kolya.act()
+    for number in range(number_cat):
+        cats[number].act()
+
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
     cprint(kolya, color='cyan')
-    cprint(murzik, color='cyan')
+    for number in range(number_cat):
+        cprint(cats[number], color='cyan')
+
     cprint(home, color='cyan')
 
 print('')
