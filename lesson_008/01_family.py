@@ -47,7 +47,7 @@ class House:
     def __init__(self):
         self.money = 100
         self.food = 50
-        self.pet_food = 50
+        self.pet_food = 30
         self.dirt = 0
 
     def __str__(self):
@@ -83,8 +83,13 @@ class Man:
         else:
             print(f'{self.name} не смог поесть, нет еды')
 
+    def game_with_cat(self):
+        self.happy += 5
+        self.fullness -= 10
+        print(f'{self.name} гладил кота')
+
     def act(self):
-        if self.fullness <= 0 or self.happy < 10:
+        if self.fullness < 0 or self.happy < 10:
             print(f'{self.name} умер')
             return 'Dead'
         if self.house.dirt >= 90:
@@ -102,18 +107,22 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
-        super().act()
-        dice = randint(1, 5)
-        if self.fullness <= 20:
-            self.eat()
-        elif self.house.money <= 100:
-            self.work()
-        elif dice == 1:
-            self.eat()
-        elif 2 <= dice <= 4:
-            self.work()
-        elif dice == 5:
-            self.gaming()
+        if super().act() is not "Dead":
+            dice = randint(1, 6)
+            if self.fullness <= 20:
+                self.eat()
+            elif self.house.money <= 100:
+                self.work()
+            elif dice == 1:
+                self.eat()
+            elif 2 <= dice <= 4:
+                self.work()
+            elif dice == 5:
+                self.gaming()
+            elif dice == 6:
+                self.game_with_cat()
+        else:
+            print(f'{self.name} мертв')
 
     def eat(self):
         super().eat()
@@ -139,28 +148,34 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
-        super().act()
-        dice = randint(1, 8)
-        if self.fullness <= 20:
-            self.eat()
-        elif self.house.dirt > 100:
-            self.clean_house()
-        elif dice <= 1:
-            self.eat()
-        elif 2 <= dice <= 5:
-            self.shopping()
-        elif 6 <= dice <= 7:
-            self.clean_house()
-        elif dice == 8:
-            self.buy_fur_coat()
+        if super().act() is not "Dead":
+            dice = randint(1, 9)
+            if self.fullness <= 20:
+                self.eat()
+            elif self.house.food <= 50 or self.house.pet_food <= 20:
+                self.shopping()
+            elif self.house.dirt > 100:
+                self.clean_house()
+            elif dice <= 1:
+                self.eat()
+            elif 2 <= dice <= 4:
+                self.shopping()
+            elif 5 <= dice <= 6:
+                self.clean_house()
+            elif dice == 7:
+                self.buy_fur_coat()
+            elif 8 <= dice <= 9:
+                super().game_with_cat()
+        else:
+            print(f'{self.name} мертва')
 
     def eat(self):
         super().eat()
 
     def shopping(self):
         if self.house.money >= 150:
-            self.house.food += 150
-            self.house.pet_food += 00
+            self.house.food += 120
+            self.house.pet_food += 30
             self.house.money -= 150
             self.fullness -= 10
             print(f'{self.name} купила еды')
@@ -297,20 +312,72 @@ cprint(f'Всего заработано {Man.total_money} денег, съед�
 
 class Cat:
 
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 30
+        self.house = None
+
+    def __str__(self):
+        return f'У кота {self.name} сытость равна {self.fullness}'
 
     def act(self):
-        pass
+        if self.fullness < 0:
+            print(f'{self.name} умер')
+            return 'Dead'
+        dice = randint(1, 5)
+        if self.fullness <= 10:
+            self.eat()
+        elif dice == 1:
+            self.eat()
+        elif 2 <= dice <= 4:
+            self.sleep()
+        elif dice == 5:
+            self.soil()
 
     def eat(self):
-        pass
+        if self.house.pet_food > 0:
+            if self.house.pet_food >= 10:
+                self.house.pet_food -= 10
+                self.fullness += 20
+                print(f'Кот {self.name} поел')
+            else:
+                self.fullness += self.house.pet_food * 2
+                self.house.pet_food = 0
+                print(f'Кот {self.name} доел остатки еды')
+        else:
+            print(f'У кота {self.name} нет еды')
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        print(f'Кот {self.name} спит')
 
     def soil(self):
-        pass
+        self.fullness -= 10
+        self.house.dirt += 5
+        print(f'Кот {self.name} драл обои')
+
+
+home = House()
+serge = Husband(name='Сережа')
+masha = Wife(name='Маша')
+murzik = Cat(name='Мурзик')
+
+serge.house = home
+masha.house = home
+murzik.house = home
+
+for day in range(365):
+    cprint('================== День {} =================='.format(day+1), color='red')
+    serge.act()
+    masha.act()
+    murzik.act()
+    cprint(serge, color='cyan')
+    cprint(masha, color='cyan')
+    cprint(murzik, color='cyan')
+    cprint(home, color='cyan')
+
+print('')
+cprint(f'Всего заработано {Man.total_money} денег, съедено {Man.total_eat} еды, куплено {Man.total_coat} шуб', color='red')
 
 
 
