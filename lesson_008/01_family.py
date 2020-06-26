@@ -194,19 +194,75 @@ class Wife(Man):
             print(f'{self.name} убралась дома')
 
 
+######################################################## Часть вторая бис
+#
+# После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
+#
+# Ребенок может:
+#   есть,
+#   спать,
+#
+# отличия от взрослых - кушает максимум 10 единиц еды,
+# степень счастья  - не меняется, всегда ==100 ;)
+
+class Child(Man):
+
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def __str__(self):
+        return super().__str__()
+
+    def act(self):
+        if super().act() is not "Dead":
+            dice = randint(1, 2)
+            if self.fullness <= 20:
+                self.eat()
+            elif dice == 1:
+                self.eat()
+            else:
+                self.sleep()
+            self.happy = 100
+        else:
+            print(f'{self.name} мёртв')
+
+    def eat(self):
+        if self.house.food > 0:
+            if self.house.food >= 10:
+                self.fullness += 10
+                Man.total_eat += 10
+                self.house.food -= 10
+                print(f'{self.name} поел')
+            else:
+                self.fullness += self.house.food
+                Man.total_eat += self.house.food
+                self.house.food = 0
+                print(f'{self.name} доел всю еду в доме')
+        else:
+            print(f'{self.name} не смог поесть, нет еды')
+
+    def sleep(self):
+        self.fullness -= 10
+        print(f'{self.name} спит')
+
+
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
+kolya = Child(name='Коля')
 
 serge.house = home
 masha.house = home
+kolya.house = home
 
 for day in range(365):
     cprint('================== День {} =================='.format(day+1), color='red')
     serge.act()
     masha.act()
+    kolya.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
+    cprint(kolya, color='cyan')
     cprint(home, color='cyan')
 
 print('')
@@ -256,37 +312,6 @@ class Cat:
     def soil(self):
         pass
 
-
-######################################################## Часть вторая бис
-#
-# После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
-#
-# Ребенок может:
-#   есть,
-#   спать,
-#
-# отличия от взрослых - кушает максимум 10 единиц еды,
-# степень счастья  - не меняется, всегда ==100 ;)
-
-class Child:
-
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        return super().__str__()
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-
-# TODO после реализации второй части - отдать на проверку учителем две ветки
 
 
 ######################################################## Часть третья
