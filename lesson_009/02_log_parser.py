@@ -28,24 +28,32 @@ class LogParser:
         self.now_time = None
         self.end_char = None
         self.file_name = file_name
+        self.out_file_name = None
+        self.out_file = None
         self.encoding = encoding
         self.__set_interval(interval)
 
     def __set_interval(self, interval):
         if interval == 'minute':
             self.end_char = 17
+            self.out_file_name = 'out_minute.txt'
         elif interval == 'hour':
             self.end_char = 14
+            self.out_file_name = 'out_hour.txt'
         elif interval == 'day':
             self.end_char = 11
+            self.out_file_name = 'out_day.txt'
         elif interval == 'month':
             self.end_char = 8
+            self.out_file_name = 'out_month.txt'
         elif interval == 'year':
             self.end_char = 5
+            self.out_file_name = 'out_year.txt'
 
     def parse(self, interval=None):
         if interval is not None:
             self.__set_interval(interval)
+        self.out_file = open(self.out_file_name, 'w', encoding=self.encoding)
         self.counter = 0
         with open(file="events.txt", mode='r') as file:
             self.last_time = file.readline(17)[1:self.end_char]
@@ -60,30 +68,39 @@ class LogParser:
                 if event[0:3] == "NOK":
                     self.counter += 1
             self.__print_last_line__()
+            self.out_file.close()
 
     def __print_interval_statistics__(self):
         if self.end_char == 14:
             current_hour = int(self.last_time[11:14])
-            if current_hour == 23:
-                print(f'[{self.last_time}:00 - 00:00] {self.counter}')
-            elif 8 >= current_hour >= 0:
-                print(f'[{self.last_time}:00 - 0{current_hour + 1}:00] {self.counter}')
+            if 9 >= current_hour >= 0:
+                output = f'[{self.last_time}:00 - 0{current_hour}:59] {self.counter}'
+                print(output)
+                self.out_file.write(output+'\n')
             else:
-                print(f'[{self.last_time}:00 - {current_hour + 1}:00] {self.counter}')
+                output = f'[{self.last_time}:00 - {current_hour}:59] {self.counter}'
+                print(output)
+                self.out_file.write(output + '\n')
         else:
-            print(f'[{self.last_time}] {self.counter}')
+            output = f'[{self.last_time}] {self.counter}'
+            print(output)
+            self.out_file.write(output + '\n')
 
     def __print_last_line__(self):
         if self.end_char == 14:
             current_hour = int(self.now_time[11:14])
-            if current_hour == 23:
-                print(f'[{self.now_time}:00 - 00:00] {self.counter}')
-            elif 9 >= current_hour >= 1:
-                print(f'[{self.now_time}:00 - 0{current_hour + 1}:00] {self.counter}')
+            if 9 >= current_hour >= 0:
+                output = f'[{self.now_time}:00 - 0{current_hour}:59] {self.counter}'
+                print(output)
+                self.out_file.write(output + '\n')
             else:
-                print(f'[{self.now_time}:00 - {current_hour + 1}:00] {self.counter}')
+                output = f'[{self.now_time}:00 - {current_hour}:59] {self.counter}'
+                print(output)
+                self.out_file.write(output + '\n')
         else:
-            print(f'[{self.now_time}] {self.counter}')
+            output = f'[{self.now_time}] {self.counter}'
+            print(output)
+            self.out_file.write(output + '\n')
 
 
 test = LogParser()
