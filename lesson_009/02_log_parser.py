@@ -22,38 +22,30 @@
 
 class LogParser:
 
-    def __init__(self, file_name="events.txt", encoding='utf8', interval='minute'):
+    def __init__(self, file_name="events.txt", out_file_name='out.txt'):
         self.counter = 0
         self.last_time = None
         self.now_time = None
         self.end_char = None
         self.file_name = file_name
-        self.out_file_name = None
+        self.out_file_name = out_file_name
         self.out_file = None
-        self.encoding = encoding
-        self.__set_interval(interval)
 
     def __set_interval(self, interval):
         if interval == 'minute':
             self.end_char = 17
-            self.out_file_name = 'out_minute.txt'
         elif interval == 'hour':
             self.end_char = 14
-            self.out_file_name = 'out_hour.txt'
         elif interval == 'day':
             self.end_char = 11
-            self.out_file_name = 'out_day.txt'
         elif interval == 'month':
             self.end_char = 8
-            self.out_file_name = 'out_month.txt'
         elif interval == 'year':
             self.end_char = 5
-            self.out_file_name = 'out_year.txt'
 
-    def parse(self, interval=None):
-        if interval is not None:
-            self.__set_interval(interval)
-        self.out_file = open(self.out_file_name, 'w', encoding=self.encoding)
+    def parse(self, interval='minute'):
+        self.__set_interval(interval)
+        self.out_file = open(self.out_file_name, 'w')
         self.counter = 0
         with open(file="events.txt", mode='r') as file:
             self.last_time = file.readline(17)[1:self.end_char]
