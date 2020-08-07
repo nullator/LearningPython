@@ -57,11 +57,11 @@ class FileArrange:
                 self.files_attr[full_file_name] = year, month
 
     def copy_files(self):
-        '''Сохдаёт пустые папки назначения, копирует в них файлы'''
-        for images, attr in self.files_attr.items():
+        '''Создаёт пустые папки назначения, копирует в них файлы'''
+        for file, attr in self.files_attr.items():
             destination = os.path.normpath(os.path.join(self.destination_dir, attr[0], attr[1]))
             os.makedirs(destination, exist_ok=True)
-            shutil.copy2(src=images, dst=destination)
+            shutil.copy2(src=file, dst=destination)
 
 
 Files = FileArrange(source='icons', destination='icons_by_year')
