@@ -46,10 +46,12 @@ class SuicideError(Exception):
 	pass
 
 
-exceptions = [IamGodError, DrunkError, CarCrashError, GluttonyError, DepressionError, SuicideError]
-
-
 def one_day():
+	'''
+	Возвращает случайное целое число от 1 до 7.
+	С вероятностью 1/13 возвращает случаное исключение
+	'''
+	exceptions = [IamGodError, DrunkError, CarCrashError, GluttonyError, DepressionError, SuicideError]
 	if randint(1, 13) == 13:
 		raise exceptions[randint(0, 5)]
 	return randint(1, 7)
