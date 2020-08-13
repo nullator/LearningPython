@@ -34,41 +34,78 @@ class NotEmailError(Exception):
 
 def check_line(line):
 	'''
-	Считывает строку, проверяет значения. При выявленииошибки вызывает исключение. В случае если ошибок нет - возвращает список со значениями
+	Считывает строку, проверяет значения. При выявлении ошибки вызывает исключение.
+	В случае если ошибок нет - возвращает список со значениями
 	'''
 	name, email, age = line.split(" ")
 	if check_name(name) and check_email(email) and check_age(age):
 		return [name, email, age]
 	
 	
-def check_name(name):
-	if re.search('\d+', name) is not None:
-		raise NotNameError(f'Указано имя - {name}. Имя должно содержать только буквы без цифр')
+def check_name(name: str):
+	'''
+	Проверяет имя. Должно содержать только буквы, если содержит цифры - вызывает ощибку NotNameError
+	'''
+	if re.search("\d+", name) is not None:
+		raise NotNameError(f'Некорректное имя - {name}')
 	else: 
 		return True
 	
 
-def check_email(email):
+def check_email(email: str):
+	'''
+	Проверяет адрес почты. Если в адресе нет символов "@" и "." - вызывает ошибку NotEmailError
+	'''
 	if re.search('@', email) is None or re.search('.', email) is None:
 		raise NotEmailError(f'Указана несуществующая электронная почта - {email}')
 	else:
 		return True
 		
 		
-def check_age(age):
+def check_age(age: str):
+	'''
+	Проверяет возраст. По условиям задачи возраст должен быть в промежутке от 10 до 99.
+	Если возраст не соответствует условиям - вызывает ошибку ValueError.
+	Если возраст не является числом - вызывает ошибку ValueError.
+	'''
+	if re.search('\n', age) is not None:
+		age = age[:-1]
 	if age.isdigit():
 		if int(age) < 10 or int(age) > 99:
-			raise ValueError(f'Некорректное значение возраста ({age}). Возраст должен быть в промежутке 10 - 99')
+			raise ValueError(f'Возраст ({age}) выходит за пределы 10 - 99 лет')
 		else:
 			return True
 	else:
-		raise ValueError(f"Указано значение возраста - {age}. Значение возраста должно содержать цифры")
+		raise ValueError(f"Указано значение возраста ({age}). Значение возраста должно содержать цифры")
 	
 
 registration_good_log = []
-registrarion_bad_log = []						
-with open('registrations.txt', 'r') as file:
+registration_bad_log = []
+with open('registrations.txt', 'r', encoding='utf8') as file:
 	for line in file:
-		line = line[:-1]	
-		print(check_line(line))
-		
+		try:
+			check_line(line)
+			registration_good_log.append(line)
+		except ValueError as exc:
+			if 'unpack' in exc.args[0]:
+				registration_bad_log.append(f'Не хватает операндов в строке \"{line}\"')
+				# print(f'Не хватает операндов в строке \"{line}\"')
+			else:
+				registration_bad_log.append(exc.args[0] + f' в строке \"{line}\"')
+				# print(exc.args[0] + f' в строке \"{line}\"')
+		except NotEmailError as exc:
+			registration_bad_log.append(exc.args[0] + f' в строке \"{line}\"')
+			# print(exc.args[0] + f' в строке \"{line}\"')
+		except NotNameError as exc:
+			registration_bad_log.append(exc.args[0] + f' в строке \"{line}\"')
+			# print(exc.args[0] + f' в строке \"{line}\"')
+
+with open('registrations_good.log', 'w', encoding='utf8') as good_log_file:
+	good_log_file.writelines(registration_good_log)
+
+with open('registrations_bad.log', 'w', encoding='utf8') as bad_log_file:
+	bad_log_file.writelines(registration_bad_log)
+
+print(f'Всего обработано {len(registration_good_log)+len(registration_bad_log)} записей')
+print(f'Корректные записи в количестве {len(registration_good_log)} записаны в файл registrations_good.log')
+print(f'Некорректные записи в количестве {len(registration_bad_log)} записаны в файл registrations_bad.log')
