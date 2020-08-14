@@ -74,7 +74,7 @@ class Man:
                 self.fullness += 30
                 self.house.food -= 30
                 Man.total_eat += 30
-                print(f'{self.name} поел')
+                print(f'{self.name} поел, осталось еды {self.house.food}')
             else:
                 self.fullness += self.house.food
                 Man.total_eat += self.house.food
@@ -107,11 +107,11 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
-        if super().act() is not "Dead":
+        if super().act() != "Dead":
             dice = randint(1, 6)
             if self.fullness <= 20:
                 self.eat()
-            elif self.house.money <= 100:
+            elif self.house.money <= 200:
                 self.work()
             elif dice == 1:
                 self.eat()
@@ -120,9 +120,7 @@ class Husband(Man):
             elif dice == 5:
                 self.gaming()
             elif dice == 6:
-                self.game_with_cat()
-        else:
-            print(f'{self.name} мертв')
+                super().game_with_cat()
 
     def eat(self):
         super().eat()
@@ -148,13 +146,13 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
-        if super().act() is not "Dead":
+        if super().act() != "Dead":
             dice = randint(1, 9)
             if self.fullness <= 20:
                 self.eat()
-            elif self.house.food <= 50 or self.house.pet_food <= 20:
+            elif self.house.food <= 60 or self.house.pet_food <= 50:
                 self.shopping()
-            elif self.house.dirt > 100:
+            elif self.house.dirt >= 90:
                 self.clean_house()
             elif dice <= 1:
                 self.eat()
@@ -166,19 +164,17 @@ class Wife(Man):
                 self.buy_fur_coat()
             elif 8 <= dice <= 9:
                 super().game_with_cat()
-        else:
-            print(f'{self.name} мертва')
 
     def eat(self):
         super().eat()
 
     def shopping(self):
-        if self.house.money >= 150:
-            self.house.food += 120
-            self.house.pet_food += 30
-            self.house.money -= 150
+        if self.house.money >= 200:
+            self.house.food += 100
+            self.house.pet_food += 100
+            self.house.money -= 200
             self.fullness -= 10
-            print(f'{self.name} купила еды')
+            print(f'{self.name} купила еды и корма')
         elif self.house.money > 0:
             self.house.food += self.house.money
             self.house.money = 0
@@ -189,7 +185,7 @@ class Wife(Man):
             print(f'{self.name} хотела купить еды, но дене нет')
 
     def buy_fur_coat(self):
-        if self.house.money >= 350:
+        if self.house.money >= 500:
             self.house.money -= 350
             self.happy += 60
             self.fullness -= 10
@@ -211,6 +207,56 @@ class Wife(Man):
 
 ######################################################## Часть вторая
 #
+# После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
+#
+# Ребенок может:
+#   есть,
+#   спать,
+#
+# отличия от взрослых - кушает максимум 10 единиц еды,
+# степень счастья  - не меняется, всегда ==100 ;)
+
+class Child(Man):
+
+    def __init__(self, name):
+        super().__init__(name=name)
+
+    def __str__(self):
+        return super().__str__()
+
+    def act(self):
+        if super().act() != "Dead":
+            dice = randint(1, 2)
+            if self.fullness <= 20:
+                self.eat()
+            elif dice == 1:
+                self.eat()
+            else:
+                self.sleep()
+            self.happy = 100
+        else:
+            print(f'{self.name} мёртв')
+
+    def eat(self):
+        if self.house.food > 0:
+            if self.house.food >= 10:
+                self.fullness += 10
+                Man.total_eat += 10
+                self.house.food -= 10
+                print(f'{self.name} поел')
+            else:
+                self.fullness += self.house.food
+                Man.total_eat += self.house.food
+                self.house.food = 0
+                print(f'{self.name} доел всю еду в доме')
+        else:
+            print(f'{self.name} не смог поесть, нет еды')
+
+    def sleep(self):
+        self.fullness -= 10
+        print(f'{self.name} спит')
+
+
 # После подтверждения учителем первой части надо
 # отщепить ветку develop и в ней начать добавлять котов в модель семьи
 #
@@ -249,7 +295,7 @@ class Cat:
             print(f'{self.name} умер')
             return 'Dead'
         dice = randint(1, 5)
-        if self.fullness <= 10:
+        if self.fullness <= 20:
             self.eat()
         elif dice == 1:
             self.eat()
@@ -284,56 +330,35 @@ class Cat:
 home = House()
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
-murzik = Cat(name='Мурзик')
+kolya = Child(name='Коля')
 
 serge.house = home
 masha.house = home
-murzik.house = home
+kolya.house = home
+
+number_cat = 7
+cats = []
+for number in range(number_cat):
+    cats.append(Cat(name=f'Мурзик {number}'))
+    cats[number].house = home
 
 for day in range(365):
     cprint('================== День {} =================='.format(day+1), color='red')
     serge.act()
     masha.act()
-    murzik.act()
+    kolya.act()
+    for number in range(number_cat):
+        cats[number].act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
-    cprint(murzik, color='cyan')
+    cprint(kolya, color='cyan')
+    for number in range(number_cat):
+        cprint(cats[number], color='cyan')
     cprint(home, color='cyan')
 
 print('')
 cprint(f'Всего заработано {Man.total_money} денег, съедено {Man.total_eat} еды, куплено {Man.total_coat} шуб', color='red')
 
-
-######################################################## Часть вторая бис
-#
-# После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
-#
-# Ребенок может:
-#   есть,
-#   спать,
-#
-# отличия от взрослых - кушает максимум 10 единиц еды,
-# степень счастья  - не меняется, всегда ==100 ;)
-
-class Child:
-
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        return super().__str__()
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-
-# TODO после реализации второй части - отдать на проверку учителем две ветки
 
 
 ######################################################## Часть третья
