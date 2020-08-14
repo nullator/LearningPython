@@ -51,9 +51,9 @@ class PrimeNumbers:
             raise StopIteration
 
 
-prime_number_iterator = PrimeNumbers(n=10000)
-for number in prime_number_iterator:
-    print(number)
+# prime_number_iterator = PrimeNumbers(n=100)
+# for number in prime_number_iterator:
+#     print(number)
 
 
 # Часть 2
@@ -72,8 +72,8 @@ def prime_numbers_generator(n):
             yield number
 
 
-for number in prime_numbers_generator(n=10000):
-    print(number)
+# for number in prime_numbers_generator(n=100):
+#     print(number)
 
 
 # Часть 3
@@ -91,3 +91,34 @@ for number in prime_numbers_generator(n=10000):
 # простых счастливых палиндромных чисел и так далее. Придумать не менее 2х способов.
 #
 # Подсказка: возможно, нужно будет добавить параметр в итератор/генератор.
+
+def happy_number(number: int):
+    """
+    Проверка является ли число счястливым
+    """
+    str_number = str(number)
+    number_len = len(str_number)
+    n = number_len // 2
+    numbers = tuple(map(int, str_number))
+
+    # Проверка является ли количество цифр в числе четным
+    if (number_len % 2) == 0:
+        is_even = True
+    else:
+        is_even = False
+
+    left_side = sum(numbers[:n])
+    if is_even:
+        right_side = sum(numbers[n:])
+    else:
+        right_side = sum(numbers[n+1:])  # Если количество цифр в числе нечётное, среднюю цифру не учитываем
+
+    if left_side == right_side:
+        print('True')
+    else:
+        print('False')
+
+    return left_side == right_side
+
+
+happy_number(92083)
