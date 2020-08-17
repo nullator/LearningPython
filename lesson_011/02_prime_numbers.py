@@ -121,4 +121,23 @@ def happy_number(number: int):
     return left_side == right_side
 
 
+def palindrome_number(number: int):
+    """
+    Проверка является ли число палиндромом
+    """
+    str_number = str(number)
+    list_number = list(str_number)
+    list_number.reverse()
+    reverse_number = "".join(list_number)
+
+    if str_number == reverse_number:
+        print('True')
+    else:
+        print("False")
+
+    return str_number == reverse_number
+
+
 happy_number(92083)
+palindrome_number(92083)
+palindrome_number(101)
