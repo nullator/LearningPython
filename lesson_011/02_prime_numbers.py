@@ -98,6 +98,8 @@ def happy_number(number: int):
     """
     str_number = str(number)
     number_len = len(str_number)
+    if number_len == 1:
+        return False
     n = number_len // 2
     numbers = tuple(map(int, str_number))
 
@@ -113,10 +115,10 @@ def happy_number(number: int):
     else:
         right_side = sum(numbers[n+1:])  # Если количество цифр в числе нечётное, среднюю цифру не учитываем
 
-    if left_side == right_side:
-        print('True')
-    else:
-        print('False')
+    # if left_side == right_side:
+    #     print('True')
+    # else:
+    #     print('False')
 
     return left_side == right_side
 
@@ -130,14 +132,20 @@ def palindrome_number(number: int):
     list_number.reverse()
     reverse_number = "".join(list_number)
 
-    if str_number == reverse_number:
-        print('True')
-    else:
-        print("False")
+    # if str_number == reverse_number:
+    #     print('True')
+    # else:
+    #     print("False")
 
     return str_number == reverse_number
 
 
-happy_number(92083)
-palindrome_number(92083)
-palindrome_number(101)
+prime_numbers = list(prime_numbers_generator(100000))
+
+print("Перечень счястливых простых чисел до 100000:")
+result_happy = filter(happy_number, prime_numbers)
+print(list(result_happy))
+
+print("Перечень полиндромных простых чисел до 100000:")
+result_palindrome = filter(palindrome_number, prime_numbers)
+print(list(result_palindrome))
