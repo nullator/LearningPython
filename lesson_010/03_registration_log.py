@@ -46,7 +46,7 @@ def check_name(name: str):
 	'''
 	Проверяет имя. Должно содержать только буквы, если содержит цифры - вызывает ощибку NotNameError
 	'''
-	if re.search("\d+", name) is not None:
+	if not name.isalpha():
 		raise NotNameError(f'Некорректное имя - {name}')
 	else: 
 		return True
@@ -56,7 +56,7 @@ def check_email(email: str):
 	'''
 	Проверяет адрес почты. Если в адресе нет символов "@" и "." - вызывает ошибку NotEmailError
 	'''
-	if re.search('@', email) is None or re.search('.', email) is None:
+	if '@' not in email or '.' not in email:
 		raise NotEmailError(f'Указана несуществующая электронная почта - {email}')
 	else:
 		return True
