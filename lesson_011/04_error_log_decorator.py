@@ -8,18 +8,27 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
-    pass
-    # TODO здесь ваш код
+def log_errors(log_filename='function_errors.log'):
+    def log_errors_func(func):
+        def surrogate(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+                return result
+            except Exception as exc:
+                with open(log_filename, mode="a") as file:
+                    file.write(f'Invalid format: {exc} in function "{func.__name__}" \n')
+                raise
+        return surrogate
+    return log_errors_func
 
 
 # Проверить работу на следующих функциях
-@log_errors
+@log_errors('function_errors.log')
 def perky(param):
     return param / 0
 
 
-@log_errors
+@log_errors('function_errors.log')
 def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
@@ -38,12 +47,15 @@ lines = [
     'Земфира 86',
     'Равшан wmsuuzsxi@mail.ru 35',
 ]
+
+
+# perky(param=42)
+
 for line in lines:
     try:
         check_line(line)
     except Exception as exc:
         print(f'Invalid format: {exc}')
-perky(param=42)
 
 
 # Усложненное задание (делать по желанию).
